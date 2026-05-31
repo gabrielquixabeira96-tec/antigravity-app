@@ -52,10 +52,10 @@ function Field({
 }) {
   return (
     <div className="mb-5">
-      <label className="block text-sm font-semibold text-slate-300 mb-2">
+      <label className="block text-sm font-medium text-zinc-300 mb-2">
         {label}
       </label>
-      {hint && <p className="text-xs text-slate-500 mb-2">{hint}</p>}
+      {hint && <p className="text-xs text-zinc-600 mb-2">{hint}</p>}
       {children}
     </div>
   )
@@ -79,16 +79,18 @@ function Select({
       id={id}
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className="w-full px-4 py-3 rounded-xl text-sm font-medium transition-all"
+      className="w-full px-4 py-3 text-sm font-medium transition-all"
       style={{
-        background: 'rgba(255,255,255,0.05)',
-        border: '1px solid rgba(255,255,255,0.1)',
-        color: value ? '#f1f5f9' : '#64748b',
+        background: '#18181b',
+        border: '1px solid #27272a',
+        color: value ? '#fafafa' : '#52525b',
+        borderRadius: 0,
+        outline: 'none',
       }}
     >
-      <option value="" disabled>{placeholder}</option>
+      <option value="" disabled style={{ background: '#18181b', color: '#52525b' }}>{placeholder}</option>
       {options.map((o) => (
-        <option key={o.value} value={o.value} style={{ background: '#0d1b2a' }}>
+        <option key={o.value} value={o.value} style={{ background: '#18181b', color: '#fafafa' }}>
           {o.label}
         </option>
       ))}
@@ -116,11 +118,13 @@ function Input({
       value={value}
       onChange={(e) => onChange(e.target.value)}
       placeholder={placeholder}
-      className="w-full px-4 py-3 rounded-xl text-sm font-medium"
+      className="w-full px-4 py-3 text-sm font-medium"
       style={{
-        background: 'rgba(255,255,255,0.05)',
-        border: '1px solid rgba(255,255,255,0.1)',
-        color: '#f1f5f9',
+        background: '#18181b',
+        border: '1px solid #27272a',
+        color: '#fafafa',
+        borderRadius: 0,
+        outline: 'none',
       }}
     />
   )
@@ -238,18 +242,18 @@ export default function RastrearPage() {
   if (step === 'enviando') {
     return (
       <PageWrapper>
-        <div className="text-center py-20">
-          <div className="text-5xl mb-6 animate-float">🔬</div>
-          <h2 className="text-2xl font-bold text-slate-100 mb-3">Analisando seu perfil...</h2>
-          <p className="text-slate-400 text-sm">
-            Aplicando critérios clínicos INCA 2024 e USPSTF
+        <div className="text-center py-16">
+          <div className="w-6 h-6 border border-zinc-600 mx-auto mb-6 animate-pulse" />
+          <h2 className="text-xl font-bold text-zinc-100 mb-3">Analisando perfil clínico</h2>
+          <p className="text-zinc-500 text-sm">
+            Aplicando critérios INCA 2024 e USPSTF
           </p>
-          <div className="mt-8 flex justify-center gap-2">
+          <div className="mt-8 flex justify-center gap-1.5">
             {[0, 1, 2].map((i) => (
               <div
                 key={i}
-                className="w-3 h-3 rounded-full bg-cyan-400"
-                style={{ animation: `pulse 1.2s ease-in-out ${i * 0.2}s infinite` }}
+                className="w-1.5 h-1.5 bg-zinc-600"
+                style={{ animation: `blink 1.2s ease-in-out ${i * 0.2}s infinite` }}
               />
             ))}
           </div>
@@ -261,10 +265,15 @@ export default function RastrearPage() {
   if (step === 'erro') {
     return (
       <PageWrapper>
-        <div className="text-center py-16">
-          <div className="text-5xl mb-4">⚠️</div>
-          <h2 className="text-xl font-bold text-red-400 mb-3">Ocorreu um erro</h2>
-          <p className="text-slate-400 text-sm mb-6">{erroMsg}</p>
+        <div className="text-center py-14">
+          <div
+            className="inline-block px-3 py-1 text-xs font-bold font-mono uppercase tracking-widest mb-5"
+            style={{ background: 'rgba(239,68,68,0.07)', color: '#fca5a5', border: '1px solid rgba(239,68,68,0.18)' }}
+          >
+            Erro
+          </div>
+          <h2 className="text-lg font-bold text-zinc-200 mb-3">Ocorreu um problema</h2>
+          <p className="text-zinc-500 text-sm mb-7">{erroMsg}</p>
           <button
             id="btn-tentar-novamente"
             onClick={() => { setStep('identificacao'); setErroMsg('') }}
@@ -313,25 +322,22 @@ export default function RastrearPage() {
             </Field>
 
             <Field label="Sexo biológico">
-              <div className="flex gap-3">
+              <div className="flex gap-px bg-zinc-800">
                 {(['MASCULINO', 'FEMININO'] as const).map((s) => (
                   <button
                     key={s}
                     type="button"
                     id={`btn-sexo-${s.toLowerCase()}`}
                     onClick={() => set('sexo_biologico')(s)}
-                    className="flex-1 py-3 rounded-xl text-sm font-semibold transition-all"
+                    className="flex-1 py-3 text-sm font-semibold transition-all"
                     style={{
-                      background: form.sexo_biologico === s
-                        ? 'var(--gradient-teal)'
-                        : 'rgba(255,255,255,0.05)',
-                      color: form.sexo_biologico === s ? '#0a0f1e' : '#94a3b8',
-                      border: form.sexo_biologico === s
-                        ? 'none'
-                        : '1px solid rgba(255,255,255,0.1)',
+                      background: form.sexo_biologico === s ? '#fafafa' : '#18181b',
+                      color: form.sexo_biologico === s ? '#09090b' : '#71717a',
+                      border: 'none',
+                      cursor: 'pointer',
                     }}
                   >
-                    {s === 'MASCULINO' ? '♂ Masculino' : '♀ Feminino'}
+                    {s === 'MASCULINO' ? 'Masculino' : 'Feminino'}
                   </button>
                 ))}
               </div>
@@ -343,12 +349,8 @@ export default function RastrearPage() {
               className="btn-primary w-full justify-center mt-4"
               disabled={!form.whatsapp || !form.idade || !form.sexo_biologico}
               onClick={() => setStep('questionario')}
-              style={{
-                opacity: (!form.whatsapp || !form.idade || !form.sexo_biologico) ? 0.4 : 1,
-                cursor: (!form.whatsapp || !form.idade || !form.sexo_biologico) ? 'not-allowed' : 'pointer',
-              }}
             >
-              Próxima etapa →
+              Próxima etapa
             </button>
           </div>
         )}
@@ -364,7 +366,7 @@ export default function RastrearPage() {
             />
 
             {/* Tabagismo */}
-            <SectionTitle>🚬 Tabagismo</SectionTitle>
+            <SectionTitle>Tabagismo</SectionTitle>
 
             <Field label="Você fuma ou fumou?">
               <Select
@@ -396,7 +398,7 @@ export default function RastrearPage() {
             )}
 
             {/* Histórico familiar */}
-            <SectionTitle>👨‍👩‍👧 Histórico Familiar</SectionTitle>
+            <SectionTitle>Histórico Familiar</SectionTitle>
 
             <Field label="Algum familiar próximo (pais, irmãos) teve câncer?">
               <Select id="sel-hist-familiar" value={form.historico_familiar_cancer} onChange={set('historico_familiar_cancer')} options={simNaoOpts} />
@@ -408,7 +410,7 @@ export default function RastrearPage() {
             )}
 
             {/* Exames anteriores */}
-            <SectionTitle>🩺 Exames Anteriores</SectionTitle>
+            <SectionTitle>Exames Anteriores</SectionTitle>
 
             <Field label="Quando foi seu último exame de sangue oculto nas fezes / colonoscopia?">
               <Select id="sel-colonoscopia" value={form.ultima_colonoscopia} onChange={set('ultima_colonoscopia')} options={[
@@ -455,7 +457,7 @@ export default function RastrearPage() {
             )}
 
             {/* Outros fatores */}
-            <SectionTitle>☀️ Outros Fatores de Risco</SectionTitle>
+            <SectionTitle>Outros Fatores de Risco</SectionTitle>
 
             <Field label="Tem exposição solar intensa e frequente (trabalho ao ar livre, etc.)?">
               <Select id="sel-solar" value={form.exposicao_solar_cronica} onChange={set('exposicao_solar_cronica')} options={simNaoOpts} />
@@ -473,21 +475,21 @@ export default function RastrearPage() {
               <Select id="sel-raca" value={form.raca_negra} onChange={set('raca_negra')} options={simNaoOpts} />
             </Field>
 
-            <div className="flex gap-3 mt-6">
+            <div className="flex gap-2 mt-6">
               <button
                 id="btn-voltar"
                 type="button"
                 className="btn-secondary flex-1 justify-center"
                 onClick={() => setStep('identificacao')}
               >
-                ← Voltar
+                Voltar
               </button>
               <button
                 id="btn-enviar-questionario"
                 type="submit"
                 className="btn-primary flex-1 justify-center"
               >
-                🔬 Ver meu rastreamento
+                Ver rastreamento
               </button>
             </div>
           </div>
@@ -503,17 +505,13 @@ export default function RastrearPage() {
 
 function PageWrapper({ children }: { children: React.ReactNode }) {
   return (
-    <main
-      className="min-h-screen flex items-start justify-center py-12 px-4"
-      style={{ background: 'var(--gradient-hero)' }}
-    >
-      <div
-        className="w-full max-w-lg glass-card p-8 mt-4"
-        style={{ boxShadow: '0 32px 64px rgba(0,0,0,0.5)' }}
-      >
+    <main className="min-h-screen bg-zinc-950 flex items-start justify-center py-12 px-4">
+      <div className="w-full max-w-lg glass-card p-8 mt-4">
         <div className="flex items-center gap-2 mb-8">
-          <span className="text-2xl">🎯</span>
-          <span className="text-sm font-bold text-cyan-400 uppercase tracking-widest">
+          <div className="w-5 h-5 bg-zinc-50 flex items-center justify-center shrink-0">
+            <span className="text-zinc-950 font-black text-xs select-none">R</span>
+          </div>
+          <span className="text-xs font-bold text-zinc-500 uppercase tracking-widest">
             Rastreamento Oncológico
           </span>
         </div>
@@ -528,29 +526,29 @@ function StepHeader({ step, total, title, subtitle }: {
 }) {
   return (
     <div className="mb-8">
-      <div className="flex items-center gap-2 mb-3">
+      <div className="flex items-center gap-px mb-4">
         {Array.from({ length: total }).map((_, i) => (
           <div
             key={i}
-            className="h-1 flex-1 rounded-full transition-all"
+            className="h-px flex-1 transition-all"
             style={{
-              background: i < step
-                ? 'var(--gradient-teal)'
-                : 'rgba(255,255,255,0.1)',
+              background: i < step ? '#fafafa' : '#27272a',
             }}
           />
         ))}
       </div>
-      <p className="text-xs text-slate-500 mb-2">Etapa {step} de {total}</p>
-      <h1 className="text-2xl font-bold text-slate-100 mb-1">{title}</h1>
-      <p className="text-sm text-slate-400">{subtitle}</p>
+      <p className="text-xs text-zinc-600 font-mono mb-2 uppercase tracking-widest">
+        Etapa {step} de {total}
+      </p>
+      <h1 className="text-xl font-bold text-zinc-100 mb-1">{title}</h1>
+      <p className="text-sm text-zinc-500">{subtitle}</p>
     </div>
   )
 }
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
-    <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mt-7 mb-4 border-t border-slate-800 pt-5">
+    <p className="text-xs font-bold text-zinc-600 uppercase tracking-widest mt-7 mb-4 border-t border-zinc-800 pt-5">
       {children}
     </p>
   )
