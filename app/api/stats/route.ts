@@ -8,41 +8,27 @@ import { prisma } from '@/lib/prisma'
 
 export async function GET() {
   try {
-    // Executa queries em paralelo para performance
-    const [
-      totalPacientes,
-      totalRastreamentos,
-      pacientesComRastreamento,
-      rastreamentosPorTipo,
-      rastreamentosUrgentes,
-      cadastrosHoje,
-    ] = await Promise.all([
-      prisma.pacientes.count(),
-
-      prisma.rastreamentos_gerados.count(),
-
-      prisma.pacientes.count({
-        where: { rastreamentos: { some: {} } },
-      }),
-
-      prisma.rastreamentos_gerados.groupBy({
-        by: ['tipo_cancer'],
-        _count: { tipo_cancer: true },
-        orderBy: { _count: { tipo_cancer: 'desc' } },
-      }),
-
-      prisma.rastreamentos_gerados.count({
-        where: { criterio_clinico: { contains: '[URGENTE]' } },
-      }),
-
-      prisma.pacientes.count({
-        where: {
-          data_cadastro: {
-            gte: new Date(new Date().setHours(0, 0, 0, 0)),
-          },
+    // Executa queries sequencialmente para não esgotar o pool de conexões do Supabase (limite de 15 no modo session)
+    const totalPacientes = await prisma.pacientes.count()
+    const totalRastreamentos = await prisma.rastreamentos_gerados.count()
+    const pacientesComRastreamento = await prisma.pacientes.count({
+      where: { rastreamentos: { some: {} } },
+    })
+    const rastreamentosPorTipo = await prisma.rastreamentos_gerados.groupBy({
+      by: ['tipo_cancer'],
+      _count: { tipo_cancer: true },
+      orderBy: { _count: { tipo_cancer: 'desc' } },
+    })
+    const rastreamentosUrgentes = await prisma.rastreamentos_gerados.count({
+      where: { criterio_clinico: { contains: '[URGENTE]' } },
+    })
+    const cadastrosHoje = await prisma.pacientes.count({
+      where: {
+        data_cadastro: {
+          gte: new Date(new Date().setHours(0, 0, 0, 0)),
         },
-      }),
-    ])
+      },
+    })
 
     const taxaDeteccao =
       totalPacientes > 0
