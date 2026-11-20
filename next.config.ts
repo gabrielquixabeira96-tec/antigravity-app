@@ -13,6 +13,21 @@ const nextConfig: NextConfig = {
     formats: ['image/avif', 'image/webp'],
   },
 
+  // Página inicial: serve a carta ao médico (HTML estático em public/).
+  // O app antigo continua no repositório; só deixa de ser a página inicial.
+  async rewrites() {
+    return {
+      beforeFiles: [
+        {
+          source: '/',
+          destination: '/carta-ao-medico.html',
+        },
+      ],
+      afterFiles: [],
+      fallback: [],
+    }
+  },
+
   // Cabeçalhos de segurança
   async headers() {
     return [
